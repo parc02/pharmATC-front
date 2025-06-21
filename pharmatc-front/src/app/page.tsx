@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 
 type DrugDto = {
   itemSeq: string;
@@ -19,11 +19,17 @@ export default function Home() {
   const [searchType, setSearchType] = useState<'itemSeq' | 'ediCode' | 'itemName'>('itemSeq');
   const [searchValue, setSearchValue] = useState('');
   const [tolerance, setTolerance] = useState(0);
+  const [sameFormOnly, setSameFormOnly] = useState(false);
   const [searchResults, setSearchResults] = useState<DrugDto[]>([]);
   const [selectedBaseDrug, setSelectedBaseDrug] = useState<DrugDto | null>(null);
   const [results, setResults] = useState<DrugDto[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+
+  const filteredResults = useMemo(() => {
+    if (!sameFormOnly || !selectedBaseDrug) return results;
+    return results.filter(d => d.formCodeName === selectedBaseDrug.formCodeName);
+  }, [results, sameFormOnly, selectedBaseDrug]);
 
   const handleSearch = async () => {
     const trimmed = searchValue.trim();
@@ -31,6 +37,7 @@ export default function Home() {
       setError('검색어를 입력해주세요.');
       return;
     }
+
     if (isNaN(tolerance) || tolerance < 0) {
       setError('허용 오차는 0 이상의 숫자여야 합니다.');
       return;
@@ -89,7 +96,6 @@ export default function Home() {
 
   return (
       <main className="flex flex-col md:flex-row h-screen">
-        {/* 왼쪽 검색 영역 */}
         <div className="w-full md:w-1/3 p-4 border-r overflow-y-auto">
           <h1 className="text-2xl font-bold mb-4">약품 검색</h1>
 
@@ -124,6 +130,15 @@ export default function Home() {
               <option value={20}>20%</option>
             </select>
 
+            <div className="flex items-center space-x-2">
+              <input
+                  type="checkbox"
+                  checked={sameFormOnly}
+                  onChange={() => setSameFormOnly(prev => !prev)}
+              />
+              <label className="text-sm">기준 약과 같은 제형만 보기</label>
+            </div>
+
             <button
                 onClick={handleSearch}
                 disabled={loading}
@@ -135,7 +150,6 @@ export default function Home() {
             {error && <p className="text-red-600 text-sm">{error}</p>}
           </div>
 
-          {/* 약품 선택 리스트 */}
           {searchResults.length > 0 && (
               <div className="space-y-2">
                 <p className="text-sm text-gray-600">검색된 약품 (기준 약 선택)</p>
@@ -151,13 +165,12 @@ export default function Home() {
               </div>
           )}
 
-          {/* 선택된 기준 약 정보 */}
           {selectedBaseDrug && (
               <div className="mt-6 p-4 border rounded bg-gray-50">
                 <h3 className="text-md font-semibold mb-2">선택된 기준 약품</h3>
                 <p><strong>약품명:</strong> {selectedBaseDrug.itemName}</p>
-                <p><strong>품목기준코드:</strong> {selectedBaseDrug.itemSeq}</p>
                 <p><strong>제형:</strong> {selectedBaseDrug.formCodeName}</p>
+                <p><strong>품목기준코드:</strong> {selectedBaseDrug.itemSeq}</p>
                 <p><strong>장축:</strong> {selectedBaseDrug.lengLong} mm</p>
                 <p><strong>단축:</strong> {selectedBaseDrug.lengShort} mm</p>
                 <p><strong>두께:</strong> {selectedBaseDrug.thick} mm</p>
@@ -165,12 +178,11 @@ export default function Home() {
           )}
         </div>
 
-        {/* 오른쪽 결과 영역 */}
         <div className="w-full md:w-2/3 p-4 overflow-y-auto">
           <h2 className="text-xl font-semibold mb-4">호환 약품</h2>
           <div className="space-y-4">
-            {results.length > 0 ? (
-                results.map((drug, index) => (
+            {filteredResults.length > 0 ? (
+                filteredResults.map((drug, index) => (
                     <div key={index} className="p-4 border rounded shadow">
                       {drug.itemImage && (
                           <img
@@ -180,9 +192,9 @@ export default function Home() {
                           />
                       )}
                       <p><strong>약품명:</strong> {drug.itemName}</p>
+                      <p><strong>제형:</strong> {drug.formCodeName}</p>
                       <p><strong>품목기준코드:</strong> {drug.itemSeq}</p>
                       <p><strong>업체명:</strong> {drug.entpName} (코드: {drug.entpSeq})</p>
-                      <p><strong>제형:</strong> {drug.formCodeName}</p>
                       <p><strong>장축:</strong> {drug.lengLong} mm</p>
                       <p><strong>단축:</strong> {drug.lengShort} mm</p>
                       <p><strong>두께:</strong> {drug.thick} mm</p>
