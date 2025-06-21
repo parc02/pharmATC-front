@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useMemo } from 'react';
+import Image from 'next/image';
 
 type DrugDto = {
   itemSeq: string;
@@ -67,8 +68,12 @@ export default function Home() {
         const list = Array.isArray(data) ? data : [];
         setSearchResults(list);
       }
-    } catch (err: any) {
-      setError(err.message || '검색 중 오류 발생');
+    } catch (err) {
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError('검색 중 오류 발생');
+      }
     } finally {
       setLoading(false);
     }
@@ -87,8 +92,12 @@ export default function Home() {
       if (!res.ok) throw new Error('매칭 검색 실패');
       const data = await res.json();
       setResults(data.matchedDrugs || []);
-    } catch (err: any) {
-      setError(err.message || '매칭 중 오류 발생');
+    } catch (err) {
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError('매칭 중 오류 발생');
+      }
     } finally {
       setLoading(false);
     }
@@ -102,7 +111,7 @@ export default function Home() {
           <div className="space-y-4 mb-4">
             <select
                 value={searchType}
-                onChange={(e) => setSearchType(e.target.value as any)}
+                onChange={(e) => setSearchType(e.target.value as 'itemSeq' | 'ediCode' | 'itemName')}
                 className="w-full border rounded p-2"
             >
               <option value="itemSeq">품목기준코드</option>
@@ -185,9 +194,11 @@ export default function Home() {
                 filteredResults.map((drug, index) => (
                     <div key={index} className="p-4 border rounded shadow">
                       {drug.itemImage && (
-                          <img
+                          <Image
                               src={drug.itemImage}
                               alt={`${drug.itemName} 이미지`}
+                              width={128}
+                              height={128}
                               className="mb-2 w-32 h-32 object-contain border"
                           />
                       )}
