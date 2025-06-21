@@ -28,6 +28,7 @@ jobs:
       - name: Build and Export
         run: |
           npm run build
+          npm run export
 
       - name: Deploy to Firebase Hosting
         uses: FirebaseExtended/action-hosting-deploy@v0
