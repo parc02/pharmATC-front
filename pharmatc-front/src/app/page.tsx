@@ -32,22 +32,20 @@ export default function Home() {
   const [showModal, setShowModal] = useState(false);
   const [savedDrugs, setSavedDrugs] = useState<DrugDto[]>([]);
 
-  // 저장된 약 불러오기
   useEffect(() => {
     const stored = localStorage.getItem('myDrugs');
     if (stored) {
       setSavedDrugs(JSON.parse(stored));
     }
-  }, [showModal]); // 모달 닫힐 때 다시 반영
+  }, [showModal]);
 
   const filteredResults = useMemo(() => {
-    let list = sameFormOnly && selectedBaseDrug
+    const list = sameFormOnly && selectedBaseDrug
         ? results.filter(d => d.formCodeName === selectedBaseDrug.formCodeName)
         : results;
 
     const savedIds = new Set(savedDrugs.map(d => d.itemSeq));
 
-    // 저장된 약 먼저 정렬
     return [
       ...list.filter(d => savedIds.has(d.itemSeq)),
       ...list.filter(d => !savedIds.has(d.itemSeq)),
