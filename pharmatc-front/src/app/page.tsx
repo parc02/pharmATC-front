@@ -3,6 +3,8 @@
 import { useState, useMemo } from 'react';
 import Image from 'next/image';
 
+const API_BASE_URL = 'https://pharmatc-backend-production.up.railway.app';
+
 type DrugDto = {
   itemSeq: string;
   itemName: string;
@@ -52,7 +54,7 @@ export default function Home() {
 
     try {
       if (searchType === 'itemSeq') {
-        const res = await fetch('http://localhost:8080/api/v1/match', {
+        const res = await fetch(`${API_BASE_URL}/api/v1/match`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ itemSeq: trimmed, tolerance }),
@@ -62,7 +64,7 @@ export default function Home() {
         setResults(data.matchedDrugs || []);
       } else {
         const param = searchType === 'ediCode' ? 'ediCode' : 'itemName';
-        const res = await fetch(`http://localhost:8080/api/v1/drugs/search?${param}=${encodeURIComponent(trimmed)}`);
+        const res = await fetch(`${API_BASE_URL}/api/v1/drugs/search?${param}=${encodeURIComponent(trimmed)}`);
         if (!res.ok) throw new Error('약 검색 실패');
         const data = await res.json();
         const list = Array.isArray(data) ? data : [];
@@ -84,7 +86,7 @@ export default function Home() {
     setResults([]);
     setLoading(true);
     try {
-      const res = await fetch('http://localhost:8080/api/v1/match', {
+      const res = await fetch(`${API_BASE_URL}/api/v1/match`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ itemSeq: drug.itemSeq, tolerance }),
