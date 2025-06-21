@@ -1,11 +1,11 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import Image from 'next/image';
 
 const API_BASE_URL = 'https://pharmatc-backend-production.up.railway.app';
 
-type DrugDto = {
+interface DrugDto {
   itemSeq: string;
   itemName: string;
   entpSeq: string;
@@ -16,7 +16,7 @@ type DrugDto = {
   thick: number;
   ediCode: string;
   formCodeName: string;
-};
+}
 
 export default function Home() {
   const [searchType, setSearchType] = useState<'itemSeq' | 'ediCode' | 'itemName'>('itemSeq');
@@ -29,10 +29,20 @@ export default function Home() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
+  const [savedDrugs, setSavedDrugs] = useState<DrugDto[]>([]);
+  const [showModal, setShowModal] = useState(false);
+
   const filteredResults = useMemo(() => {
     if (!sameFormOnly || !selectedBaseDrug) return results;
     return results.filter(d => d.formCodeName === selectedBaseDrug.formCodeName);
   }, [results, sameFormOnly, selectedBaseDrug]);
+
+  useEffect(() => {
+    const stored = localStorage.getItem('myDrugs');
+    if (stored) {
+      setSavedDrugs(JSON.parse(stored));
+    }
+  }, []);
 
   const handleSearch = async () => {
     const trimmed = searchValue.trim();
@@ -158,6 +168,13 @@ export default function Home() {
               {loading ? '검색 중...' : '검색'}
             </button>
 
+            <button
+                onClick={() => setShowModal(true)}
+                className="w-full bg-gray-700 text-white py-2 rounded hover:bg-gray-800"
+            >
+              ⭐ 내 사용약 보기
+            </button>
+
             {error && <p className="text-red-600 text-sm">{error}</p>}
           </div>
 
@@ -219,6 +236,48 @@ export default function Home() {
             )}
           </div>
         </div>
+
+        {showModal && (
+            <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+              <div className="bg-white rounded-lg shadow-lg max-w-3xl w-full max-h-[90vh] overflow-y-auto p-6 relative">
+                <button
+                    onClick={() => setShowModal(false)}
+                    className="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
+                >
+                  ✕
+                </button>
+                <h2 className="text-xl font-bold mb-4">내 사용약</h2>
+
+                {savedDrugs.length === 0 ? (
+                    <p className="text-gray-600">저장된 약품이 없습니다.</p>
+                ) : (
+                    <div className="space-y-4">
+                      {savedDrugs.map((drug, index) => (
+                          <div key={index} className="p-4 border rounded shadow relative">
+                            {drug.itemImage && (
+                                <Image
+                                    src={drug.itemImage}
+                                    alt={`${drug.itemName} 이미지`}
+                                    width={128}
+                                    height={128}
+                                    className="mb-2 w-32 h-32 object-contain border"
+                                />
+                            )}
+                            <p><strong>약품명:</strong> {drug.itemName}</p>
+                            <p><strong>품목기준코드:</strong> {drug.itemSeq}</p>
+                            <p><strong>업체명:</strong> {drug.entpName} (코드: {drug.entpSeq})</p>
+                            <p><strong>제형:</strong> {drug.formCodeName}</p>
+                            <p><strong>장축:</strong> {drug.lengLong} mm</p>
+                            <p><strong>단축:</strong> {drug.lengShort} mm</p>
+                            <p><strong>두께:</strong> {drug.thick} mm</p>
+                            <p><strong>보험코드:</strong> {drug.ediCode}</p>
+                          </div>
+                      ))}
+                    </div>
+                )}
+              </div>
+            </div>
+        )}
       </main>
   );
 }
