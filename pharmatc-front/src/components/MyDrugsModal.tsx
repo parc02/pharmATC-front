@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import Image from 'next/image';
 
 const API_BASE_URL = 'https://pharmatc-backend-production.up.railway.app';
 
@@ -64,6 +63,7 @@ export default function MyDrugsModal({ onClose }: { onClose: () => void }) {
                 <button onClick={onClose} className="absolute top-2 right-2 text-gray-500 hover:text-gray-700">✕</button>
                 <h2 className="text-xl font-bold mb-4">내 사용약</h2>
 
+                {/* 검색 영역 */}
                 <div className="mb-6">
                     <div className="flex space-x-2 mb-2">
                         <input
@@ -76,7 +76,9 @@ export default function MyDrugsModal({ onClose }: { onClose: () => void }) {
                         <button
                             onClick={handleSearch}
                             className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-                        >검색</button>
+                        >
+                            검색
+                        </button>
                     </div>
                     {searchResults.map((drug, index) => (
                         <div key={index} className="p-2 border rounded mb-2 flex justify-between items-center">
@@ -88,33 +90,31 @@ export default function MyDrugsModal({ onClose }: { onClose: () => void }) {
                     ))}
                 </div>
 
+                {/* 저장된 약 리스트 */}
                 {savedDrugs.length === 0 ? (
                     <p className="text-gray-600">저장된 약품이 없습니다.</p>
                 ) : (
-                    <div className="space-y-4">
+                    <ul className="space-y-2">
                         {savedDrugs.map((drug, index) => (
-                            <div key={index} className="p-4 border rounded shadow relative">
-                                {drug.itemImage && (
-                                    <Image src={drug.itemImage} alt={`${drug.itemName} 이미지`} width={128} height={128}
-                                           className="mb-2 w-32 h-32 object-contain border" />
-                                )}
-                                <p><strong>약품명:</strong> {drug.itemName}</p>
-                                <p><strong>품목기준코드:</strong> {drug.itemSeq}</p>
-                                <p><strong>업체명:</strong> {drug.entpName} (코드: {drug.entpSeq})</p>
-                                <p><strong>제형:</strong> {drug.formCodeName}</p>
-                                <p><strong>장축:</strong> {drug.lengLong} mm</p>
-                                <p><strong>단축:</strong> {drug.lengShort} mm</p>
-                                <p><strong>두께:</strong> {drug.thick} mm</p>
-                                <p><strong>보험코드:</strong> {drug.ediCode}</p>
+                            <li
+                                key={index}
+                                className="border p-3 rounded flex justify-between items-center bg-gray-50"
+                            >
+                                <div>
+                                    <p><strong>{index + 1}. {drug.itemName}</strong></p>
+                                    <p className="text-sm text-gray-600">
+                                        보험코드: {drug.ediCode} / 크기: {drug.lengLong}×{drug.lengShort}×{drug.thick} mm
+                                    </p>
+                                </div>
                                 <button
                                     onClick={() => handleDelete(drug.itemSeq)}
-                                    className="absolute top-2 right-2 text-red-500 hover:underline text-sm"
+                                    className="text-sm text-red-500 hover:underline"
                                 >
                                     삭제
                                 </button>
-                            </div>
+                            </li>
                         ))}
-                    </div>
+                    </ul>
                 )}
             </div>
         </div>
