@@ -81,7 +81,7 @@ export default function MyCassettePage() {
                     <div className="flex space-x-2 mb-4">
                         <select
                             value={searchType}
-                            onChange={(e) => setSearchType(e.target.value as any)}
+                            onChange={(e) => setSearchType(e.target.value as 'itemSeq' | 'ediCode' | 'itemName')}
                             className="p-2 border rounded"
                         >
                             <option value="itemSeq">품목기준코드</option>
