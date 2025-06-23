@@ -7,7 +7,8 @@ import DrugList from '@/components/DrugList';
 import SelectedDrugCard from '@/components/SelectedDrugCard';
 import MatchResultList from '@/components/MatchResult';
 
-const API_BASE_URL = 'http://localhost:8080';
+const API_BASE_URL = 'https://pharmatc-backend-production.up.railway.app';
+//const API_BASE_URL = 'http://localhost:8080';
 
 interface DrugDto {
     itemSeq: string;
