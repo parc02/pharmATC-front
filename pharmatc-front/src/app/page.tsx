@@ -4,7 +4,8 @@ import { useEffect, useMemo, useState } from 'react';
 import Image from 'next/image';
 import MyDrugsModal from '@/components/MyDrugsModal';
 
-const API_BASE_URL = 'https://pharmatc-backend-production.up.railway.app';
+//const API_BASE_URL = 'https://pharmatc-backend-production.up.railway.app';
+const API_BASE_URL = 'http://localhost:8080';
 
 interface DrugDto {
   itemSeq: string;
