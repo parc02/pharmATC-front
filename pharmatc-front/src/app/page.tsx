@@ -3,8 +3,8 @@
 import { useEffect, useMemo, useState } from 'react';
 import Image from 'next/image';
 
-const API_BASE_URL = 'http://localhost:8080';
-// const API_BASE_URL = 'https://pharmatc-backend-production.up.railway.app';
+//const API_BASE_URL = 'http://localhost:8080';
+const API_BASE_URL = 'https://pharmatc-backend-production.up.railway.app';
 
 interface DrugDto {
   itemSeq: string;
