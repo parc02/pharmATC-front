@@ -2,10 +2,9 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import Image from 'next/image';
-import MyDrugsModal from '@/components/MyDrugsModal';
 
-//const API_BASE_URL = 'https://pharmatc-backend-production.up.railway.app';
 const API_BASE_URL = 'http://localhost:8080';
+// const API_BASE_URL = 'https://pharmatc-backend-production.up.railway.app';
 
 interface DrugDto {
   itemSeq: string;
@@ -30,7 +29,6 @@ export default function Home() {
   const [results, setResults] = useState<DrugDto[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const [showModal, setShowModal] = useState(false);
   const [savedDrugs, setSavedDrugs] = useState<DrugDto[]>([]);
 
   useEffect(() => {
@@ -38,7 +36,7 @@ export default function Home() {
     if (stored) {
       setSavedDrugs(JSON.parse(stored));
     }
-  }, [showModal]);
+  }, []);
 
   const filteredResults = useMemo(() => {
     const list = sameFormOnly && selectedBaseDrug
@@ -86,8 +84,7 @@ export default function Home() {
         const res = await fetch(`${API_BASE_URL}/api/v1/drugs/search?${param}=${encodeURIComponent(trimmed)}`);
         if (!res.ok) throw new Error('약 검색 실패');
         const data = await res.json();
-        const list = Array.isArray(data) ? data : [];
-        setSearchResults(list);
+        setSearchResults(Array.isArray(data) ? data : []);
       }
     } catch (err) {
       if (err instanceof Error) {
@@ -177,13 +174,6 @@ export default function Home() {
               {loading ? '검색 중...' : '검색'}
             </button>
 
-            <button
-                onClick={() => setShowModal(true)}
-                className="w-full bg-gray-700 text-white py-2 rounded hover:bg-gray-800"
-            >
-              ⭐ 내 사용약 보기
-            </button>
-
             {error && <p className="text-red-600 text-sm">{error}</p>}
           </div>
 
@@ -249,8 +239,6 @@ export default function Home() {
             )}
           </div>
         </div>
-
-        {showModal && <MyDrugsModal onClose={() => setShowModal(false)} />}
       </main>
   );
 }
