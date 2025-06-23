@@ -6,22 +6,10 @@ import SearchForm from '@/components/SearchForm';
 import DrugList from '@/components/DrugList';
 import SelectedDrugCard from '@/components/SelectedDrugCard';
 import MatchResultList from '@/components/MatchResult';
+import { DrugDto } from '@/types/DrugDto'; // 타입 통일
 
 const API_BASE_URL = 'https://pharmatc-backend-production.up.railway.app';
-//const API_BASE_URL = 'http://localhost:8080';
-
-interface DrugDto {
-    itemSeq: string;
-    itemName: string;
-    entpSeq: string;
-    entpName: string;
-    itemImage: string;
-    lengLong: number;
-    lengShort: number;
-    thick: number;
-    ediCode: string;
-    formCodeName: string;
-}
+// const API_BASE_URL = 'http://localhost:8080';
 
 export default function SearchPage() {
     const [searchType, setSearchType] = useState<'itemSeq' | 'ediCode' | 'itemName'>('itemSeq');
@@ -94,7 +82,7 @@ export default function SearchPage() {
         }
     };
 
-    const handleBaseSelect = async (drug: DrugDto) => {
+    const handleBaseSelect = async (drug: DrugDto): Promise<void> => {
         setSelectedBaseDrug(drug);
         setResults([]);
         setLoading(true);
