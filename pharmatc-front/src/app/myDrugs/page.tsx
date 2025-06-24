@@ -88,14 +88,14 @@ export default function MyCassettePage() {
 
     const handleExportToExcel = () => {
         const exportData = savedDrugs.map(drug => ({
-            '품목기준코드': drug.itemSeq,
-            '보험코드': drug.ediCode,
-            '약품명': drug.itemName,
-            '제조사': drug.entpName,
-            '제형': drug.formCodeName,
-            '장축 길이': drug.lengLong ?? '-',
-            '단축 길이': drug.lengShort ?? '-',
-            '두께': drug.thick ?? '-',
+            '품목기준코드': drug.itemSeq || '',
+            '보험코드': drug.ediCode || '',
+            '약품명': drug.itemName || '',
+            '제조사': drug.entpName || '',
+            '제형': drug.formCodeName || '',
+            '장축 길이': typeof drug.lengLong === 'number' ? drug.lengLong : '',
+            '단축 길이': typeof drug.lengShort === 'number' ? drug.lengShort : '',
+            '두께': typeof drug.thick === 'number' ? drug.thick : '',
         }));
 
         const worksheet = XLSX.utils.json_to_sheet(exportData);
@@ -106,6 +106,7 @@ export default function MyCassettePage() {
         const blob = new Blob([excelBuffer], { type: 'application/octet-stream' });
         saveAs(blob, '나의약품리스트.xlsx');
     };
+
 
     return (
         <>
