@@ -29,7 +29,7 @@ jobs:
         run: npm install --save-dev @types/file-saver
 
       - name: Build and Export
-        run: npm run build:static  # export 포함되도록 수정
+        run: npm run build 
 
       - name: Deploy to Firebase Hosting
         uses: FirebaseExtended/action-hosting-deploy@v0
