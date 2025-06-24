@@ -18,7 +18,7 @@ interface DrugDto {
 }
 
 export default function Home() {
-  const [searchType, setSearchType] = useState<'itemSeq' | 'ediCode' | 'itemName'>('itemSeq');
+  const [searchType, setSearchType] = useState<'itemSeq' | 'ediCode' | 'itemName'>('itemName'); // ✅ 약품명 우선
   const [searchValue, setSearchValue] = useState('');
   const [tolerance, setTolerance] = useState(0);
   const [sameFormOnly, setSameFormOnly] = useState(false);
@@ -122,9 +122,9 @@ export default function Home() {
                 onChange={(e) => setSearchType(e.target.value as 'itemSeq' | 'ediCode' | 'itemName')}
                 className="w-full border rounded p-2"
             >
-              <option value="itemSeq">품목기준코드</option>
+              <option value="itemName">약품명</option> {/* ✅ 약품명이 최상단 */}
               <option value="ediCode">보험코드</option>
-              <option value="itemName">약품명</option>
+              <option value="itemSeq">품목기준코드</option>
             </select>
 
             <input
@@ -159,7 +159,7 @@ export default function Home() {
             <button
                 onClick={handleSearch}
                 disabled={loading}
-                className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 disabled:opacity-50"
+                className="w-full bg-yellow-500 hover:bg-yellow-600 text-white py-2 rounded disabled:opacity-50"
             >
               {loading ? '검색 중...' : '검색'}
             </button>

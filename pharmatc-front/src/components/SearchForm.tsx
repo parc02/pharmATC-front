@@ -30,9 +30,10 @@ export default function SearchForm({
                 onChange={(e) => setSearchType(e.target.value as 'itemSeq' | 'ediCode' | 'itemName')}
                 className="w-full mb-3 p-2 border rounded"
             >
-                <option value="itemSeq">품목기준코드</option>
-                <option value="ediCode">보험코드</option>
                 <option value="itemName">약품명</option>
+                <option value="ediCode">보험코드</option>
+                <option value="itemSeq">품목기준코드</option>
+
             </select>
 
             <input

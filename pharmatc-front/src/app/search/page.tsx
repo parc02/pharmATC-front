@@ -12,7 +12,7 @@ const API_BASE_URL = 'https://pharmatc-backend-production.up.railway.app';
 // const API_BASE_URL = 'http://localhost:8080';
 
 export default function SearchPage() {
-    const [searchType, setSearchType] = useState<'itemSeq' | 'ediCode' | 'itemName'>('itemSeq');
+    const [searchType, setSearchType] = useState<'itemSeq' | 'ediCode' | 'itemName'>('itemName');
     const [searchValue, setSearchValue] = useState('');
     const [tolerance, setTolerance] = useState(0);
     const [loading, setLoading] = useState(false);
