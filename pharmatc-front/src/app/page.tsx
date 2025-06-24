@@ -1,9 +1,7 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
-import Image from 'next/image';
 
-//const API_BASE_URL = 'http://localhost:8080';
 const API_BASE_URL = 'https://pharmatc-backend-production.up.railway.app';
 
 interface DrugDto {
@@ -87,11 +85,7 @@ export default function Home() {
         setSearchResults(Array.isArray(data) ? data : []);
       }
     } catch (err) {
-      if (err instanceof Error) {
-        setError(err.message);
-      } else {
-        setError('검색 중 오류 발생');
-      }
+      setError(err instanceof Error ? err.message : '검색 중 오류 발생');
     } finally {
       setLoading(false);
     }
@@ -111,11 +105,7 @@ export default function Home() {
       const data = await res.json();
       setResults(data.matchedDrugs || []);
     } catch (err) {
-      if (err instanceof Error) {
-        setError(err.message);
-      } else {
-        setError('매칭 중 오류 발생');
-      }
+      setError(err instanceof Error ? err.message : '매칭 중 오류 발생');
     } finally {
       setLoading(false);
     }
@@ -212,7 +202,7 @@ export default function Home() {
                 filteredResults.map((drug, index) => (
                     <div key={index} className="p-4 border rounded shadow">
                       {drug.itemImage && (
-                          <Image
+                          <img
                               src={drug.itemImage}
                               alt={`${drug.itemName} 이미지`}
                               width={128}
@@ -220,11 +210,7 @@ export default function Home() {
                               className="mb-2 w-32 h-32 object-contain border"
                           />
                       )}
-                      <p>
-                        <strong>약품명:</strong>{' '}
-                        {savedDrugs.some(s => s.itemSeq === drug.itemSeq) ? '⭐ ' : ''}
-                        {drug.itemName}
-                      </p>
+                      <p><strong>약품명:</strong> {savedDrugs.some(s => s.itemSeq === drug.itemSeq) ? '⭐ ' : ''}{drug.itemName}</p>
                       <p><strong>제형:</strong> {drug.formCodeName}</p>
                       <p><strong>품목기준코드:</strong> {drug.itemSeq}</p>
                       <p><strong>업체명:</strong> {drug.entpName} (코드: {drug.entpSeq})</p>
