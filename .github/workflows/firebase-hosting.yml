@@ -23,13 +23,18 @@ jobs:
           node-version: 20
 
       - name: Install dependencies
-        run: npm install  # 기본 의존성 설치
+        run: npm install  # npm ci → npm install 로 변경 (충돌 방지)
+
+      - name: Install xlsx file-saver
+        run: npm install xlsx file-saver
+
 
       - name: Install missing type declarations
         run: npm install --save-dev @types/file-saver
 
+
       - name: Build and Export
-        run: npm run build 
+        run: npm run build:static  # export 포함되도록 수정
 
       - name: Deploy to Firebase Hosting
         uses: FirebaseExtended/action-hosting-deploy@v0
