@@ -1,5 +1,3 @@
-import Image from 'next/image';
-
 interface DrugDto {
     itemImage: string;
     itemName: string;
@@ -16,12 +14,12 @@ export default function SelectedDrugCard({ drug }: { drug: DrugDto }) {
         <div>
             <h3 className="font-semibold text-md mb-2">선택한 약품</h3>
             <div className="p-4 border rounded bg-white flex items-center space-x-4">
-                <Image
+                <img
                     src={drug.itemImage}
                     alt={drug.itemName}
                     width={80}
                     height={80}
-                    className="border"
+                    className="border object-contain"
                 />
                 <div className="text-sm space-y-1">
                     <p>보험코드: {drug.ediCode}</p>
