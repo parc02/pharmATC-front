@@ -1,5 +1,3 @@
-import Image from 'next/image';
-
 interface DrugDto {
     itemImage: string;
     itemName: string;
@@ -19,12 +17,12 @@ export default function MatchResultList({ results }: { results: DrugDto[] }) {
                 {results.length > 0 ? (
                     results.map((drug, i) => (
                         <div key={i} className="flex p-4 border rounded bg-white items-center space-x-4">
-                            <Image
+                            <img
                                 src={drug.itemImage}
                                 alt={drug.itemName}
                                 width={80}
                                 height={80}
-                                className="border"
+                                className="border object-contain"
                             />
                             <div className="text-sm space-y-1">
                                 <p>보험코드: {drug.ediCode}</p>
