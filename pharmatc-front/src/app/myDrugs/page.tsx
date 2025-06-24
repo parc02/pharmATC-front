@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from 'react';
 import TopNav from '@/components/TopNav';
+import * as XLSX from 'xlsx';
+import { saveAs } from 'file-saver';
 
 const API_BASE_URL = 'https://pharmatc-backend-production.up.railway.app';
 
@@ -72,6 +74,27 @@ export default function MyCassettePage() {
         localStorage.setItem('myDrugs', JSON.stringify(updated));
     };
 
+    const handleExportToExcel = () => {
+        const exportData = savedDrugs.map(drug => ({
+            '품목기준코드': drug.itemSeq,
+            '보험코드': drug.ediCode,
+            '약품명': drug.itemName,
+            '제조사': drug.entpName,
+            '제형': drug.formCodeName,
+            '장축 길이': drug.lengLong,
+            '단축 길이': drug.lengShort,
+            '두께': drug.thick,
+        }));
+
+        const worksheet = XLSX.utils.json_to_sheet(exportData);
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, 'MyDrugs');
+
+        const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+        const blob = new Blob([excelBuffer], { type: 'application/octet-stream' });
+        saveAs(blob, '나의약품리스트.xlsx');
+    };
+
     return (
         <>
             <TopNav />
@@ -87,7 +110,6 @@ export default function MyCassettePage() {
                             <option value="itemName">약품명</option>
                             <option value="ediCode">보험코드</option>
                             <option value="itemSeq">품목기준코드</option>
-
                         </select>
                         <input
                             type="text"
@@ -132,7 +154,15 @@ export default function MyCassettePage() {
                 </section>
 
                 <section>
-                    <h2 className="text-xl font-bold mb-4">나의 약품 리스트</h2>
+                    <div className="flex justify-between items-center mb-4">
+                        <h2 className="text-xl font-bold">나의 약품 리스트</h2>
+                        <button
+                            onClick={handleExportToExcel}
+                            className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded"
+                        >
+                            엑셀로 추출하기
+                        </button>
+                    </div>
                     <div className="mb-2">
                         <input
                             type="text"
