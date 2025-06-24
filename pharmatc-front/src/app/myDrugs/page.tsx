@@ -62,7 +62,19 @@ export default function MyCassettePage() {
     const handleSave = (drug: DrugDto) => {
         const exists = savedDrugs.find(d => d.itemSeq === drug.itemSeq);
         if (!exists) {
-            const updated = [...savedDrugs, drug];
+            const safeDrug: DrugDto = {
+                itemSeq: drug.itemSeq ?? '',
+                itemName: drug.itemName ?? '',
+                entpSeq: drug.entpSeq ?? '',
+                entpName: drug.entpName ?? '',
+                itemImage: drug.itemImage ?? '',
+                lengLong: drug.lengLong ?? 0,
+                lengShort: drug.lengShort ?? 0,
+                thick: drug.thick ?? 0,
+                ediCode: drug.ediCode ?? '',
+                formCodeName: drug.formCodeName ?? '',
+            };
+            const updated = [...savedDrugs, safeDrug];
             setSavedDrugs(updated);
             localStorage.setItem('myDrugs', JSON.stringify(updated));
         }
@@ -81,9 +93,9 @@ export default function MyCassettePage() {
             '약품명': drug.itemName,
             '제조사': drug.entpName,
             '제형': drug.formCodeName,
-            '장축 길이': drug.lengLong,
-            '단축 길이': drug.lengShort,
-            '두께': drug.thick,
+            '장축 길이': drug.lengLong ?? '-',
+            '단축 길이': drug.lengShort ?? '-',
+            '두께': drug.thick ?? '-',
         }));
 
         const worksheet = XLSX.utils.json_to_sheet(exportData);
