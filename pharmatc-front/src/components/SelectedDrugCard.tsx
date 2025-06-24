@@ -22,6 +22,7 @@ export default function SelectedDrugCard({ drug }: { drug: DrugDto }) {
                     width={80}
                     height={80}
                     className="border"
+                    unoptimized
                 />
                 <div className="text-sm space-y-1">
                     <p>보험코드: {drug.ediCode}</p>

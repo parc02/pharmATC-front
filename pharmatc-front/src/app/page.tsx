@@ -218,6 +218,7 @@ export default function Home() {
                               width={128}
                               height={128}
                               className="mb-2 w-32 h-32 object-contain border"
+                              unoptimized
                           />
                       )}
                       <p>
