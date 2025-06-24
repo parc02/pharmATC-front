@@ -58,7 +58,7 @@ export default function SearchForm({
             <button
                 onClick={onSearch}
                 disabled={loading}
-                className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 disabled:opacity-50"
+                className="w-full bg-yellow-500 hover:bg-yellow-600 text-white py-2 rounded disabled:opacity-50"
             >
                 {loading ? '검색 중...' : '검색'}
             </button>
