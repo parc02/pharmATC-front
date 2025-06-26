@@ -2,8 +2,7 @@
 
 import { useEffect, useMemo, useState } from 'react';
 
-const API_BASE_URL = 'https://pharmatc-backend-production.up.railway.app';
-
+const API_BASE_URL = 'http://13.55.135.105:8080';
 interface DrugDto {
   itemSeq: string;
   itemName: string;
