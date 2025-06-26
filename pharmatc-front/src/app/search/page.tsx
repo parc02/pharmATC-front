@@ -8,7 +8,7 @@ import SelectedDrugCard from '@/components/SelectedDrugCard';
 import MatchResultList from '@/components/MatchResult';
 import { DrugDto } from '@/types/DrugDto'; // 타입 통일
 
-const API_BASE_URL = 'https://pharmatc-backend-production.up.railway.app';
+const API_BASE_URL = 'http://13.55.135.105:8080';
 // const API_BASE_URL = 'http://localhost:8080';
 
 export default function SearchPage() {
