@@ -22,12 +22,17 @@ jobs:
         working-directory: Frontend/pharmatc-front
         run: npm ci
 
+      - name: Install additional packages
+        working-directory: Frontend/pharmatc-front
+        run: |
+          npm install xlsx file-saver
+          npm install --save-dev @types/file-saver
+
       - name: Build frontend
         working-directory: Frontend/pharmatc-front
         run: |
           npm run build
-          # Next.js export 사용 시 아래 라인 유지
-          # npm run export
+          # npm run export  ← Next.js 사용 시에만 활성화
 
       - name: Copy build files to EC2
         uses: appleboy/scp-action@v0.1.7
@@ -35,7 +40,7 @@ jobs:
           host: ${{ secrets.EC2_HOST }}
           username: ec2-user
           key: ${{ secrets.EC2_SSH_KEY }}
-          # CRA = build/, Next.js export = out/
+          # CRA라면 build/, Next.js + export 라면 out/
           source: "Frontend/pharmatc-front/build/"
           target: "/home/ec2-user/frontend"
 
@@ -45,4 +50,5 @@ jobs:
           host: ${{ secrets.EC2_HOST }}
           username: ec2-user
           key: ${{ secrets.EC2_SSH_KEY }}
-          script: sudo systemctl restart nginx
+          script: |
+            sudo systemctl restart nginx
