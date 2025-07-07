@@ -9,10 +9,6 @@ jobs:
   build_and_deploy:
     runs-on: ubuntu-latest
 
-    defaults:
-      run:
-        working-directory: pharmatc-front
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -23,14 +19,17 @@ jobs:
           node-version: 20
 
       - name: Install dependencies
+        working-directory: pharmatc-front
         run: npm ci
 
       - name: Install optional packages
+        working-directory: pharmatc-front
         run: |
           npm install xlsx file-saver
           npm install --save-dev @types/file-saver
 
       - name: Build frontend
+        working-directory: pharmatc-front
         run: npm run build
 
       - name: Copy build files to EC2
