@@ -19,14 +19,14 @@ jobs:
           node-version: 20
 
       - name: Install dependencies
-        working-directory: Frontend/pharmATC-front/pharmatc-front
+        working-directory: Frontend/pharmatc-front
         run: npm ci
 
       - name: Build frontend
-        working-directory: Frontend/pharmATC-front/pharmatc-front
+        working-directory: Frontend/pharmatc-front
         run: |
           npm run build
-          npm run export  # ← next export 쓰는 경우
+          npm run export  # Next.js 사용 시만
 
       - name: Copy build files to EC2
         uses: appleboy/scp-action@v0.1.7
@@ -34,7 +34,7 @@ jobs:
           host: ${{ secrets.EC2_HOST }}
           username: ec2-user
           key: ${{ secrets.EC2_SSH_KEY }}
-          source: "Frontend/pharmATC-front/pharmatc-front/out/"
+          source: "Frontend/pharmatc-front/out/"
           target: "/home/ec2-user/frontend"
 
       - name: Restart Nginx on EC2
