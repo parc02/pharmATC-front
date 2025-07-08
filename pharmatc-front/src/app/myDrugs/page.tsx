@@ -5,7 +5,7 @@ import TopNav from '@/components/TopNav';
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
 
-const API_BASE_URL = 'http://3.25.215.61:8080';
+const API_BASE_URL = 'http://3.25.208.164:8080';
 
 interface DrugDto {
     itemSeq: string;

@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from 'react';
 
-const API_BASE_URL = 'http://3.25.215.61:8080';
+const API_BASE_URL = 'http://3.25.208.164:8080';
 interface DrugDto {
   itemSeq: string;
   itemName: string;
