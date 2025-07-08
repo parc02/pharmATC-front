@@ -35,9 +35,6 @@ jobs:
         working-directory: pharmatc-front
         run: npm run build
 
-      - name: Debug build output
-        run: ls -al pharmatc-front/out
-
       - name: Clean remote target directory
         uses: appleboy/ssh-action@v0.1.10
         with:
@@ -45,7 +42,7 @@ jobs:
           username: ec2-user
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            sudo rm -rf /var/www/pharmatc
+            sudo rm -rf /var/www/pharmatc/*
             sudo mkdir -p /var/www/pharmatc
             sudo chown ec2-user:ec2-user /var/www/pharmatc
 
@@ -55,11 +52,12 @@ jobs:
           host: ${{ secrets.EC2_HOST }}
           username: ec2-user
           key: ${{ secrets.EC2_SSH_KEY }}
-          source: "pharmatc-front/out/*"
+          source: "pharmatc-front/out/"
           target: "/var/www/pharmatc"
+          strip_components: 2   # ⬅️ 경로에서 pharmatc-front/out 제거
           overwrite: true
 
-      - name: Fix permissions
+      - name: Fix file permissions
         uses: appleboy/ssh-action@v0.1.10
         with:
           host: ${{ secrets.EC2_HOST }}
@@ -68,7 +66,7 @@ jobs:
           script: |
             sudo chown -R nginx:nginx /var/www/pharmatc
 
-      - name: Restart Nginx
+      - name: Restart Nginx on EC2
         uses: appleboy/ssh-action@v0.1.10
         with:
           host: ${{ secrets.EC2_HOST }}
