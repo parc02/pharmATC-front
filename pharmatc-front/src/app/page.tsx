@@ -2,7 +2,8 @@
 
 import { useEffect, useMemo, useState } from 'react';
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8080';
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL!;
+
 
 //const API_BASE_URL = 'http://3.25.208.164:8080';
 interface DrugDto {
