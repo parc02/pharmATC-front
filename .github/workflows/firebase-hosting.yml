@@ -32,6 +32,15 @@ jobs:
         working-directory: pharmatc-front
         run: npm run build
 
+      - name: Clean remote target directory (optional)
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ec2-user
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            rm -rf /home/ec2-user/frontend/pharmatc-front/out
+
       - name: Copy build files to EC2
         uses: appleboy/scp-action@v0.1.7
         with:
@@ -40,6 +49,16 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           source: "pharmatc-front/out/"
           target: "/home/ec2-user/frontend"
+          overwrite: true
+
+      - name: Fix file permissions (optional)
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ec2-user
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            sudo chown -R ec2-user:ec2-user /home/ec2-user/frontend
 
       - name: Restart Nginx on EC2
         uses: appleboy/ssh-action@v0.1.10
