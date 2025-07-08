@@ -42,7 +42,7 @@ jobs:
           username: ec2-user
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-           sudo rm -rf /home/ec2-user/frontend/*
+            sudo rm -rf /var/www/pharmatc/*
 
       - name: Copy build files to EC2
         uses: appleboy/scp-action@v0.1.7
@@ -51,9 +51,8 @@ jobs:
           username: ec2-user
           key: ${{ secrets.EC2_SSH_KEY }}
           source: "pharmatc-front/out/*"
-          target: "/home/ec2-user/frontend"
+          target: "/var/www/pharmatc"
           overwrite: true
-    
 
       - name: Fix file permissions (optional)
         uses: appleboy/ssh-action@v0.1.10
@@ -62,7 +61,7 @@ jobs:
           username: ec2-user
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            sudo chown -R ec2-user:ec2-user /home/ec2-user/frontend
+            sudo chown -R nginx:nginx /var/www/pharmatc
 
       - name: Restart Nginx on EC2
         uses: appleboy/ssh-action@v0.1.10
