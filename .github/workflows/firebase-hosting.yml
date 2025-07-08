@@ -50,9 +50,10 @@ jobs:
           host: ${{ secrets.EC2_HOST }}
           username: ec2-user
           key: ${{ secrets.EC2_SSH_KEY }}
-          source: "pharmatc-front/out/"
+          source: "pharmatc-front/out/*"
           target: "/home/ec2-user/frontend"
           overwrite: true
+    
 
       - name: Fix file permissions (optional)
         uses: appleboy/ssh-action@v0.1.10
