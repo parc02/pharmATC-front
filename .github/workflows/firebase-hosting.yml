@@ -19,17 +19,22 @@ jobs:
           node-version: 20
 
       - name: Install dependencies
-        working-directory: pharmatc-front
+        working-directory: pharmatc-front/pharmatc-front
         run: npm ci
 
       - name: Install additional packages
-        working-directory: pharmatc-front
+        working-directory: pharmatc-front/pharmatc-front
         run: |
           npm install xlsx file-saver
           npm install --save-dev @types/file-saver
 
+      - name: Create .env.production
+        working-directory: pharmatc-front/pharmatc-front
+        run: |
+          echo "NEXT_PUBLIC_API_BASE_URL=http://3.25.208.164:8080" > .env.production
+
       - name: Build frontend
-        working-directory: pharmatc-front
+        working-directory: pharmatc-front/pharmatc-front
         run: npm run build
 
       - name: Clean remote target directory (optional)
@@ -39,7 +44,7 @@ jobs:
           username: ec2-user
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-           sudo rm -rf /home/ec2-user/frontend/pharmatc-front/out
+            sudo rm -rf /home/ec2-user/frontend
 
       - name: Copy build files to EC2
         uses: appleboy/scp-action@v0.1.7
@@ -47,11 +52,11 @@ jobs:
           host: ${{ secrets.EC2_HOST }}
           username: ec2-user
           key: ${{ secrets.EC2_SSH_KEY }}
-          source: "pharmatc-front/out/"
+          source: "pharmatc-front/pharmatc-front/out/"
           target: "/home/ec2-user/frontend"
           overwrite: true
 
-      - name: Fix file permissions (optional)
+      - name: Fix file permissions
         uses: appleboy/ssh-action@v0.1.10
         with:
           host: ${{ secrets.EC2_HOST }}
@@ -60,7 +65,7 @@ jobs:
           script: |
             sudo chown -R ec2-user:ec2-user /home/ec2-user/frontend
 
-      - name: Restart Nginx on EC2
+      - name: Restart Nginx
         uses: appleboy/ssh-action@v0.1.10
         with:
           host: ${{ secrets.EC2_HOST }}
