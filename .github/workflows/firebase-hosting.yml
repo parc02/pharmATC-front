@@ -35,6 +35,17 @@ jobs:
         working-directory: pharmatc-front
         run: npm run build
 
+      # ✅ 디렉토리 미리 생성하고 ec2-user로 권한 변경
+      - name: Ensure /var/www/pharmatc exists and has correct permission
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ec2-user
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            sudo mkdir -p /var/www/pharmatc
+            sudo chown -R ec2-user:ec2-user /var/www/pharmatc
+
       - name: Clean remote target directory (optional)
         uses: appleboy/ssh-action@v0.1.10
         with:
@@ -42,7 +53,7 @@ jobs:
           username: ec2-user
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            sudo rm -rf /var/www/pharmatc/*
+            rm -rf /var/www/pharmatc/*
 
       - name: Copy build files to EC2
         uses: appleboy/scp-action@v0.1.7
@@ -54,7 +65,7 @@ jobs:
           target: "/var/www/pharmatc"
           overwrite: true
 
-      - name: Fix file permissions (optional)
+      - name: Fix file permissions for nginx (optional)
         uses: appleboy/ssh-action@v0.1.10
         with:
           host: ${{ secrets.EC2_HOST }}
