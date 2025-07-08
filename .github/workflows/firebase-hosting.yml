@@ -42,7 +42,7 @@ jobs:
           username: ec2-user
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-           sudo rm -rf /home/ec2-user/frontend/pharmatc-front/out
+           sudo rm -rf /home/ec2-user/frontend/*
 
       - name: Copy build files to EC2
         uses: appleboy/scp-action@v0.1.7
