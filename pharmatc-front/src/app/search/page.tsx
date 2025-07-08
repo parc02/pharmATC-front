@@ -52,6 +52,13 @@ export default function SearchPage() {
             setError('검색어를 입력해주세요.');
             return;
         }
+
+        // 약품명일 경우 3자 이상만 검색 가능
+        if (searchType === 'itemName' && trimmed.length < 3) {
+            setError('약품명은 3자 이상 입력해야 검색이 가능합니다.');
+            return;
+        }
+
         if (isNaN(tolerance) || tolerance < 0) {
             setError('허용 오차는 0 이상의 숫자여야 합니다.');
             return;

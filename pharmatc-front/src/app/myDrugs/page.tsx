@@ -40,6 +40,11 @@ export default function MyCassettePage() {
     const handleSearch = async () => {
         const trimmed = searchValue.trim();
         if (!trimmed) return;
+        // 약품명 검색일 경우 3자 이상 입력 필수
+        if (searchType === 'itemName' && trimmed.length < 3) {
+            alert('약품명은 3자 이상 입력해주세요.');
+            return;
+        }
         try {
             if (searchType === 'itemSeq') {
                 const res = await fetch(`${API_BASE_URL}/api/v1/match`, {

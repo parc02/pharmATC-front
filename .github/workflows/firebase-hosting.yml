@@ -31,7 +31,7 @@ jobs:
       - name: Create .env.production
         run: echo "NEXT_PUBLIC_API_BASE_URL=/api" > pharmatc-front/.env.production
 
-      
+
       - name: Build frontend
         working-directory: pharmatc-front
         run: npm run build
