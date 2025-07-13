@@ -1,19 +1,21 @@
-import { DrugDto } from '@/types/DrugDto'; // 실제 위치에 따라 경로 조정
+'use client';
+
+import { DrugDto } from '@/types/DrugDto';
 
 export default function DrugList({
                                      drugs,
                                      onSelect,
                                  }: {
     drugs: DrugDto[];
-    onSelect: (drug: DrugDto) => void | Promise<void>; // async도 허용
+    onSelect: (drug: DrugDto) => void | Promise<void>;
 }) {
     return (
         <div>
             <h3 className="text-md font-medium mb-2">약품 선택</h3>
             <ul className="space-y-2 max-h-80 overflow-y-auto">
-                {drugs.map((drug, i) => (
+                {drugs.map((drug) => (
                     <li
-                        key={i}
+                        key={drug.id} // ✅ 고유 식별자 사용
                         className="flex items-center justify-between p-2 bg-white border rounded"
                     >
                         <div>

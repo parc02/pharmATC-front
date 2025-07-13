@@ -1,13 +1,5 @@
-interface DrugDto {
-    itemImage: string;
-    itemName: string;
-    ediCode: string;
-    entpName: string;
-    formCodeName: string;
-    lengLong: number;
-    lengShort: number;
-    thick: number;
-}
+// components/MatchResultList.tsx
+import { DrugDto } from '@/types/DrugDto';
 
 export default function MatchResultList({ results }: { results: DrugDto[] }) {
     return (
@@ -15,8 +7,11 @@ export default function MatchResultList({ results }: { results: DrugDto[] }) {
             <h3 className="font-semibold text-md mb-2">검색 결과</h3>
             <div className="space-y-4">
                 {results.length > 0 ? (
-                    results.map((drug, i) => (
-                        <div key={i} className="flex p-4 border rounded bg-white items-center space-x-4">
+                    results.map((drug) => (
+                        <div
+                            key={drug.id}  // id로 React key 설정
+                            className="flex p-4 border rounded bg-white items-center space-x-4"
+                        >
                             <img
                                 src={drug.itemImage}
                                 alt={drug.itemName}

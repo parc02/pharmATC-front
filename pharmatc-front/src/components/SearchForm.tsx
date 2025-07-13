@@ -1,3 +1,4 @@
+// components/SearchForm.tsx
 interface SearchFormProps {
     searchType: 'itemSeq' | 'ediCode' | 'itemName';
     setSearchType: (val: 'itemSeq' | 'ediCode' | 'itemName') => void;
@@ -25,6 +26,7 @@ export default function SearchForm({
         <div>
             <h2 className="font-semibold text-lg mb-4">약품 검색</h2>
 
+            <label className="block text-sm mb-1">검색 기준</label>
             <select
                 value={searchType}
                 onChange={(e) => setSearchType(e.target.value as 'itemSeq' | 'ediCode' | 'itemName')}
@@ -32,10 +34,10 @@ export default function SearchForm({
             >
                 <option value="itemName">약품명</option>
                 <option value="ediCode">보험코드</option>
-                <option value="itemSeq">품목기준코드</option>
-
+                <option value="itemSeq">기준코드 (itemSeq)</option>
             </select>
 
+            <label className="block text-sm mb-1">검색어</label>
             <input
                 type="text"
                 placeholder="검색어를 입력하세요"
@@ -44,6 +46,7 @@ export default function SearchForm({
                 className="w-full mb-3 p-2 border rounded"
             />
 
+            <label className="block text-sm mb-1">사이즈 허용 오차</label>
             <select
                 value={tolerance}
                 onChange={(e) => setTolerance(Number(e.target.value))}
