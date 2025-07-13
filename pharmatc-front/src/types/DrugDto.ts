@@ -1,6 +1,7 @@
 // src/types/DrugDto.ts
 export interface DrugDto {
-    itemSeq: string;
+    id: number;                // 데이터베이스 고유 식별자 (Primary Key)
+    itemSeq: number;
     itemName: string;
     entpSeq: string;
     entpName: string;

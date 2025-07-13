@@ -7,11 +7,8 @@ import { saveAs } from 'file-saver';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL!;
 
-
-//const API_BASE_URL = 'http://3.25.208.164:8080';
-
 interface DrugDto {
-    itemSeq: string;
+    id: number;                // id로 수정
     itemName: string;
     entpSeq: string;
     entpName: string;
@@ -21,6 +18,7 @@ interface DrugDto {
     thick: number;
     ediCode: string;
     formCodeName: string;
+    instanceId: string;
 }
 
 export default function MyCassettePage() {
@@ -33,14 +31,20 @@ export default function MyCassettePage() {
     useEffect(() => {
         const stored = localStorage.getItem('myDrugs');
         if (stored) {
-            setSavedDrugs(JSON.parse(stored));
+            try {
+                const parsed = JSON.parse(stored);
+                if (Array.isArray(parsed)) {
+                    setSavedDrugs(parsed.filter((d) => d.instanceId));
+                }
+            } catch (e) {
+                console.error('저장된 데이터 파싱 실패', e);
+            }
         }
     }, []);
 
     const handleSearch = async () => {
         const trimmed = searchValue.trim();
         if (!trimmed) return;
-        // 약품명 검색일 경우 3자 이상 입력 필수
         if (searchType === 'itemName' && trimmed.length < 3) {
             alert('약품명은 3자 이상 입력해주세요.');
             return;
@@ -50,7 +54,7 @@ export default function MyCassettePage() {
                 const res = await fetch(`${API_BASE_URL}/api/v1/match`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ itemSeq: trimmed })
+                    body: JSON.stringify({ itemSeq: trimmed }), // 여전히 itemSeq를 사용하고 있음
                 });
                 if (!res.ok) throw new Error('검색 실패');
                 const data = await res.json();
@@ -68,10 +72,11 @@ export default function MyCassettePage() {
     };
 
     const handleSave = (drug: DrugDto) => {
-        const exists = savedDrugs.find(d => d.itemSeq === drug.itemSeq);
+        const exists = savedDrugs.find((d) => d.instanceId === drug.instanceId);
         if (!exists) {
             const safeDrug: DrugDto = {
-                itemSeq: drug.itemSeq ?? '',
+                instanceId: drug.instanceId ?? '',
+                id: drug.id ?? 0, // itemSeq -> id로 변경
                 itemName: drug.itemName ?? '',
                 entpSeq: drug.entpSeq ?? '',
                 entpName: drug.entpName ?? '',
@@ -88,15 +93,16 @@ export default function MyCassettePage() {
         }
     };
 
-    const handleDelete = (itemSeq: string) => {
-        const updated = savedDrugs.filter(d => d.itemSeq !== itemSeq);
+    const handleDelete = (instanceId: string) => {
+        const updated = savedDrugs.filter((d) => d.instanceId !== instanceId);
         setSavedDrugs(updated);
         localStorage.setItem('myDrugs', JSON.stringify(updated));
     };
 
     const handleExportToExcel = () => {
-        const exportData = savedDrugs.map(drug => ({
-            '품목기준코드': drug.itemSeq || '',
+        const exportData = savedDrugs.map((drug) => ({
+            '식별자': drug.instanceId,
+            '품목기준코드': drug.id || '',  // itemSeq -> id로 변경
             '보험코드': drug.ediCode || '',
             '약품명': drug.itemName || '',
             '제조사': drug.entpName || '',
@@ -114,7 +120,6 @@ export default function MyCassettePage() {
         const blob = new Blob([excelBuffer], { type: 'application/octet-stream' });
         saveAs(blob, '나의약품리스트.xlsx');
     };
-
 
     return (
         <>
@@ -152,14 +157,20 @@ export default function MyCassettePage() {
                         <tr>
                             <th className="border p-2">보험코드</th>
                             <th className="border p-2">약품명</th>
+                            <th className="border p-2">장축</th>
+                            <th className="border p-2">단축</th>
+                            <th className="border p-2">두께</th>
                             <th className="border p-2"></th>
                         </tr>
                         </thead>
                         <tbody>
-                        {searchResults.map((drug, idx) => (
-                            <tr key={idx} className="text-center">
+                        {searchResults.map((drug) => (
+                            <tr key={drug.instanceId} className="text-center">
                                 <td className="border p-2">{drug.ediCode}</td>
                                 <td className="border p-2">{drug.itemName}</td>
+                                <td className="border p-2">{drug.lengLong}</td>
+                                <td className="border p-2">{drug.lengShort}</td>
+                                <td className="border p-2">{drug.thick}</td>
                                 <td className="border p-2">
                                     <button
                                         onClick={() => handleSave(drug)}
@@ -208,14 +219,14 @@ export default function MyCassettePage() {
                         {savedDrugs
                             .filter((drug) => drug.itemName.toLowerCase().includes(filter.toLowerCase()))
                             .map((drug, idx) => (
-                                <tr key={idx} className="text-center">
+                                <tr key={drug.instanceId} className="text-center">
                                     <td className="border p-2">{idx + 1}</td>
                                     <td className="border p-2">{drug.ediCode}</td>
                                     <td className="border p-2">{drug.entpName}</td>
                                     <td className="border p-2">{drug.itemName}</td>
                                     <td className="border p-2">
                                         <button
-                                            onClick={() => handleDelete(drug.itemSeq)}
+                                            onClick={() => handleDelete(drug.instanceId)}
                                             className="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded"
                                         >
                                             삭제

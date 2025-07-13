@@ -1,13 +1,5 @@
-interface DrugDto {
-    itemImage: string;
-    itemName: string;
-    ediCode: string;
-    entpName: string;
-    formCodeName: string;
-    lengLong: number;
-    lengShort: number;
-    thick: number;
-}
+// components/SelectedDrugCard.tsx
+import { DrugDto } from '@/types/DrugDto';
 
 export default function SelectedDrugCard({ drug }: { drug: DrugDto }) {
     return (
