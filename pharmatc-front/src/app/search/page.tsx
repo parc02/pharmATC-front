@@ -65,7 +65,7 @@ export default function SearchPage() {
         try {
             console.log('요청 보내는 데이터:', { itemSeq: trimmed, tolerance });  // 요청 데이터 확인
 
-            let url = `${API_BASE_URL}/api/v1/match`;
+            const url = `${API_BASE_URL}/api/v1/match`;
             if (searchType === 'itemSeq') {
                 const res = await fetch(url, {
                     method: 'POST',
